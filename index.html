@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>0</title>
+
+    <meta name="description" content="Source code generated using layoutit.com">
+    <meta name="author" content="LayoutIt!">
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <link href="css/font-awesome/font-awesome.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">چاپ لیبل</a></li>
+                        <!-- <li class="breadcrumb-item active" aria-current="page">Contact</li> -->
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="card">
+
+                    <div id="accordion">
+
+                        <div class="card">
+                            <div class="card-header" id="headingOne">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne"
+                                        aria-expanded="true" aria-controls="collapseOne">
+                                        تنظیمات بارکد
+                                    </button>
+                                </h5>
+                            </div>
+
+                            <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+                                data-parent="#accordion">
+                                <div class="card-body">
+                                    <form id="config" action="app.php" method="POST">
+                                        <table class="table text-right" dir="rtl">
+                                            <thead>
+                                                <tr>
+                                                    <th width="27.5%">عنوان</th>
+                                                    <th width="15%">مکان شروع</th>
+                                                    <th width="15%">تعداد ارقام</th>
+                                                    <th width="27.5%"></th>
+                                                    <th width="15%"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="p-0">
+                                                    <td>
+                                                        <label class="btn p-0 w-100 text-right">
+                                                            <span class="btn btn-sm"
+                                                                style="height: 20px;width: 20px; background-color: red;"></span>
+                                                            <input type="checkbox" contoroler
+                                                                data-name="staticCode_status" checked>
+                                                            کد ثابت بارکد
+                                                        </label>
+                                                    </td>
+                                                    <td class="p-1">
+                                                        <input type="number" min="0" class="form-control text-center"
+                                                            name="staticCode_start" value="1">
+                                                    </td>
+                                                    <td class="p-1">
+                                                        <input type="number" min="0" class="form-control text-center"
+                                                            name="staticCode_count" value="1">
+                                                    </td>
+                                                    <td class="text-left">
+                                                        کد ثابت بارکد
+                                                    </td>
+                                                    <td class="">
+                                                        <input type="number" min="0" value="1" name="staticCode_value"
+                                                            class="form-control mx-2" />
+                                                    </td>
+
+                                                </tr>
+                                                <tr class="p-0">
+                                                    <td>
+                                                        <label class="btn p-0 w-100 text-right">
+                                                            <span class="btn btn-sm"
+                                                                style="height: 20px;width: 20px; background-color: blue;"></span>
+                                                            <input type="checkbox" contoroler checked
+                                                                data-name="productcode_status">
+                                                            کد کالا
+                                                        </label>
+                                                    </td>
+                                                    <td class="p-1">
+                                                        <input type="number" min="0" class="form-control text-center"
+                                                            value="1" name="productcode_start">
+                                                    </td>
+                                                    <td class="p-1">
+                                                        <input type="number" min="0" class="form-control text-center"
+                                                            value="1" name="productcode_count">
+                                                    </td>
+                                                    <td class="text-left">
+                                                        <!-- <input type="checkbox" disabled data-name="staticCode_value" class="mx-2" /> -->
+                                                        <!-- کد ثابت کالا -->
+                                                    </td>
+                                                    <td class="">
+                                                        <!-- <input type="number"min="0" value="1" name="staticCode_value" class="form-control mx-2" disabled /> -->
+                                                    </td>
+                                                </tr>
+                                                <tr class="p-0">
+                                                    <td>
+                                                        <label class="btn p-0 w-100 text-right">
+                                                            <span class="btn btn-sm"
+                                                                style="height: 20px;width: 20px; background-color: green;"></span>
+                                                            <input type="checkbox" contoroler data-name="Price_status">
+                                                            قیمت
+                                                        </label>
+                                                    </td>
+                                                    <td class="p-1">
+                                                        <input type="number" min="0" class="form-control text-center"
+                                                            readonly value="1" name="Price_start">
+                                                    </td>
+                                                    <td class="p-1">
+                                                        <input type="number" min="0" class="form-control text-center"
+                                                            readonly value="1" name="Price_count">
+                                                    </td>
+                                                    <td class="p-1"></td>
+                                                    <td class="p-1"></td>
+                                                </tr>
+                                                <tr class="p-0">
+                                                    <td>
+                                                        <label class="btn p-0 w-100 text-right">
+                                                            <span class="btn btn-sm"
+                                                                style="height: 20px;width: 20px; background-color: yellow;"></span>
+                                                            <input type="checkbox" contoroler checked
+                                                                data-name="Weight_status">
+                                                            وزن/مقدار
+                                                        </label>
+                                                    </td>
+                                                    <td class="p-1">
+                                                        <input type="number" min="0" class="form-control text-center"
+                                                            value="1" name="Weight_start">
+                                                    </td>
+                                                    <td class="p-1">
+                                                        <input type="number" min="0" class="form-control text-center"
+                                                            value="1" name="Weight_count">
+                                                    </td>
+                                                    <td class="text-left">
+                                                        ضرب در بر 1000
+                                                    </td>
+                                                    <td class="">
+                                                        <input type="checkbox" data-name="Weight_ToGram" class="mx-2" />
+                                                    </td>
+                                                </tr>
+                                                <tr class="p-0">
+                                                    <td>
+                                                        <label class="btn p-0 w-100 text-right">
+                                                            <span class="btn btn-sm"
+                                                                style="height: 20px;width: 20px; background-color: pink;"></span>
+                                                            <input type="checkbox" contoroler checked
+                                                                data-name="Scalecode_status">
+                                                            شماره ترازو
+                                                        </label>
+                                                    </td>
+                                                    <td class="p-1">
+                                                        <input type="number" min="0" class="form-control text-center"
+                                                            value="1" name="Scalecode_start">
+                                                    </td>
+                                                    <td class="p-1">
+                                                        <input type="number" min="0" class="form-control text-center"
+                                                            value="1" name="Scalecode_count">
+                                                    </td>
+                                                    <td class="text-left">
+                                                        ترازو به عنوان انبار
+                                                    </td>
+                                                    <td class="">
+                                                        <input type="checkbox" data-name="Scalecode_AsWarehouse"
+                                                            class="mx-2" />
+                                                    </td>
+                                                </tr>
+                                                <tr class="p-0">
+                                                    <td>
+                                                        <label class="btn p-0 w-100 text-right">
+                                                            <span class="btn btn-sm"
+                                                                style="height: 20px;width: 20px; background-color: gray;"></span>
+                                                            <input type="checkbox" contoroler checked
+                                                                data-name="ControlNumber_status">
+                                                            رقم کنترل
+                                                        </label>
+                                                    </td>
+                                                    <td class="p-1">
+                                                        <input type="number" min="0" class="form-control text-center"
+                                                            value="1" name="ControlNumber_start">
+                                                    </td>
+                                                    <td class="p-1">
+                                                        <input type="number" min="0" class="form-control text-center"
+                                                            value="1" name="ControlNumber_count">
+                                                    </td>
+                                                    <td class="p-1"></td>
+                                                    <td class="p-1">
+                                                        <!-- <button class="btn btn-sm btn-success btn-block"
+                                                            id="submitForm"><i class="fa fa-save"></i></button> -->
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header" id="headingTwo">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed" data-toggle="collapse"
+                                        data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                        ایجاد بارکد
+                                    </button>
+                                </h5>
+                            </div>
+
+                            <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo"
+                                data-parent="#accordion">
+                                <div class="card-body">
+
+                                    <form action="" id="barcodeDataTitle">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <td>ITHEM NO</td>
+                                                    <td>COL NO</td>
+                                                    <td>METRS </td>
+                                                    <td>YDS </td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="p-0">
+                                                        <input type="text" name="data[]" class="form-control" min="0"
+                                                            maxlength="1">
+                                                    </td>
+                                                    <td class="p-0">
+                                                        <input type="text" name="data[]" class="form-control" min="0"
+                                                            maxlength="4">
+                                                    </td>
+                                                    <td class="p-0">
+                                                        <input type="text" name="data[]" class="form-control" min="0"
+                                                            maxlength="4">
+                                                    </td>
+                                                    <td class="p-0">
+                                                        <input type="text" name="data[]" class="form-control" min="0"
+                                                            maxlength="1">
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </form>
+
+
+                                    <table class="table" id="barcodeData"></table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-12 col-sm-4">
+                <div class="card bg-light mb-3">
+                    <div class="card-header bg-success text-white text-uppercase"><i class="fa fa-barcode"></i> بارکد
+                    </div>
+                    <div class="card-body p-2">
+
+                        <table class="table" dir="ltr">
+                            <thead>
+                                <tr>
+                                    <th width="50%" class="text-center">ITHEM NO :</th>
+                                    <th width="50%" class="text-center">عنوان</th>
+                                </tr>
+                                <tr>
+                                    <th width="50%" class="text-center">COL NO :</th>
+                                    <th width="50%" class="text-center">عنوان</th>
+                                </tr>
+                                <tr>
+                                    <th width="50%" class="text-center">METRS :</th>
+                                    <th width="50%" class="text-center">عنوان</th>
+                                </tr>
+                                <tr>
+                                    <th width="50%" class="text-center">YDS :</th>
+                                    <th width="50%" class="text-center">عنوان</th>
+                                </tr>
+                            </thead>
+
+                            <tfoot>
+                                <tr>
+                                    <th class="text-center" colspan="2"><img id="barcode5" /></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    </div>
+
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/scripts.js"></script>
+    <script src="js/barcode/JsBarcode.all.js"></script>
+    <script>
+        var repeat5 = function (text) {
+            JsBarcode("#barcode5", text, {
+                displayValue: true,
+                fontSize: 20
+            });
+        };
+        $(document).on("keyup", "#barcodeDataTitle input", function (e) {
+            if (e.keyCode == 13) {
+                $(this).closest("td").next("td").find("[data-barcode]").val("").focus();
+            }
+
+            var val = '';
+            $(this).closest("tbody").find("[data-barcode]").each(function () {
+                var max = $(this).attr("maxlength");
+                var v = $(this).val().replace(/ /g, '+').trim() || "0".repeat(max);
+                if (max > v.length) {
+                    v = "0".repeat(max - v.length) + v;
+                }
+                val += v;
+            });
+            repeat5(val);
+            if ($(this).attr("maxlength") == $(this).val().length) {
+                $(this).closest("td").next("td").find("[data-barcode]").val("").focus();
+            }
+        });
+        $(document).on("keyup", "[data-barcode]", function () {
+            var val = '';
+            $(this).closest("tbody").find("[data-barcode]").each(function () {
+                var max = $(this).attr("maxlength");
+                var v = $(this).val().replace(/ /g, '+').trim() || "0".repeat(max);
+                if (max > v.length) {
+                    v = "0".repeat(max - v.length) + v;
+                }
+                val += v;
+            });
+            repeat5(val);
+            if ($(this).attr("maxlength") == $(this).val().length) {
+                $(this).closest("td").next("td").find("[data-barcode]").val("").focus();
+            }
+        });
+
+
+        var change = (X) => {
+            if ($(X).is(":checked")) {
+                $(X).next("input").val(1);
+                $(X).closest("tr").find("input[type=number]").prop("readonly", false); //.val(0);
+                $(X).closest("tr").find("input[type=checkbox]").not(X).removeAttr("checked").prop("disabled", false); //.val(0);
+            } else {
+                $(X).next("input").val(0);
+                $(X).closest("tr").find("input[type=number]").prop("readonly", true); //.val(0);
+                $(X).closest("tr").find("input[type=checkbox]").not(X).removeAttr("checked").prop("disabled", true).val(0);
+            }
+        };
+        $(document).on("change", "[type=number]", function () {
+            if ($(this).val() < 0) $(this).val($(this).val() * -1);
+        });
+        $(document).find("[type=checkbox]").each(function () {
+            var name = $(this).attr("data-name");
+            var val = $(this).is(":checked") * 1;
+            $(this).after(`<input type="hidden" name="${name}" value="${val}" />`);
+            // if ($(this).is("[contoroler]")) change($(this));
+        });
+        $(document).on("change", "[contoroler]", function () {
+            change($(this));
+        });
+
+        var conf = [];
+        $(document).ready(function () {
+            var thead = '<thead><tr>';
+            var tbody = '<tbody><tr>';
+            $.getJSON("DATA.json?ver=" + Math.random(), function (data) {
+                console.log(data);
+                conf = data;
+                $.each(data, function (key, val) {
+                    if ($(`[name=${key}]`).is("[type=number]")) {
+                        $(`[name='${key}'][type=number]`).val(val);
+                    } else if ($(`[data-name=${key}]`).is("[type=checkbox]")) {
+                        if (val == 1) {
+                            $(`[data-name='${key}'][type=checkbox]`).prop("checked", true).change();
+
+                            if ($(`[data-name='${key}']`).is("[contoroler]")) {
+
+                                thead += `<td>${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}</td>`;
+                                tbody += `<td class="p-0"><input type="text" data-barcode="${key}" class="form-control" placeholder="${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}" min="0" maxlength="${data[key.replace("status", "count")]}"></td>`;
+                            }
+
+                        } else {
+                            $(`[data-name='${key}'][type=checkbox]`).prop("checked", false).change();
+                        }
+                    }
+                });
+
+                thead += `<td></td></tr></thead>`;
+                tbody += `<td><button class="btn btn-sm btn-success btn-block" id="submitBarcode"><i class="fa fa-print"></i></button></td></tr></tbody>`;
+                $("table#barcodeData").append(thead).append(tbody);
+
+                if (data.staticCode_status == 1) {
+                    $(document).find("[data-barcode='staticCode_status']").val(data.staticCode_value);
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
