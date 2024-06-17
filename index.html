@@ -155,10 +155,11 @@
                                                             value="1" name="Weight_count">
                                                     </td>
                                                     <td class="text-left">
-                                                        ضرب در بر 1000
+                                                        ضرب در
                                                     </td>
                                                     <td class="">
-                                                        <input type="checkbox" data-name="Weight_ToGram" class="mx-2" />
+                                                        <input type="number" data-name="Weight_ToGram"
+                                                            class="form-control text-center" />
                                                     </td>
                                                 </tr>
                                                 <tr class="p-0">
@@ -223,7 +224,7 @@
                                 <h5 class="mb-0">
                                     <button class="btn btn-link collapsed" data-toggle="collapse"
                                         data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                        مصولات
+                                        محصولات
 
                                         <input class="upload-excel" type="file" id="fileUpload" onchange="Upload()" />
 
@@ -235,33 +236,19 @@
                                 <div class="card-body">
 
                                     <form action="" id="barcodeDataTitle">
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <td>ITHEM NO</td>
-                                                    <td>COL NO</td>
-                                                    <td>METRS </td>
-                                                    <td>YDS </td>
-                                                </tr>
-                                            </thead>
+                                        <table>
+                                            <thead></thead>
                                             <tbody>
                                                 <tr>
-                                                    <td class="p-0">
-                                                        <input type="text" name="data[]" class="form-control" min="0"
-                                                            maxlength="1">
+                                                    <td>
+                                                        <input type="hidden0" name="id" value="">
+                                                        شناسه
                                                     </td>
-                                                    <td class="p-0">
-                                                        <input type="text" name="data[]" class="form-control" min="0"
-                                                            maxlength="4">
+                                                    <td>عنوان</td>
+                                                    <td>
+                                                        <input type="number" name="number">
                                                     </td>
-                                                    <td class="p-0">
-                                                        <input type="text" name="data[]" class="form-control" min="0"
-                                                            maxlength="4">
-                                                    </td>
-                                                    <td class="p-0">
-                                                        <input type="text" name="data[]" class="form-control" min="0"
-                                                            maxlength="1">
-                                                    </td>
+
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -393,42 +380,6 @@
             change($(this));
         });
 
-        var conf = [];
-        $(document).ready(function () {
-            var thead = '<thead><tr>';
-            var tbody = '<tbody><tr>';
-            $.getJSON("DATA.json?ver=" + Math.random(), function (data) {
-                // console.log(data);
-                conf = data;
-                $.each(data, function (key, val) {
-                    if ($(`[name=${key}]`).is("[type=number]")) {
-                        $(`[name='${key}'][type=number]`).val(val);
-                    } else if ($(`[data-name=${key}]`).is("[type=checkbox]")) {
-                        if (val == 1) {
-                            $(`[data-name='${key}'][type=checkbox]`).prop("checked", true).change();
-
-                            if ($(`[data-name='${key}']`).is("[contoroler]")) {
-
-                                thead += `<td>${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}</td>`;
-                                tbody += `<td class="p-0"><input type="text" data-barcode="${key}" class="form-control" placeholder="${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}" min="0" maxlength="${data[key.replace("status", "count")]}"></td>`;
-                            }
-
-                        } else {
-                            $(`[data-name='${key}'][type=checkbox]`).prop("checked", false).change();
-                        }
-                    }
-                });
-
-                thead += `<td></td></tr></thead>`;
-                tbody += `<td><button class="btn btn-sm btn-success btn-block" id="submitBarcode"><i class="fa fa-print"></i></button></td></tr></tbody>`;
-                $("table#barcodeData").append(thead).append(tbody);
-
-                if (data.staticCode_status == 1) {
-                    $(document).find("[data-barcode='staticCode_status']").val(data.staticCode_value);
-                }
-            });
-        });
-
     </script>
 
     <script type="text/javascript" src="js/xlsx.full.min.js"></script>
@@ -489,10 +440,60 @@
             });
         }
 
-        var EXCEL;
-        $.getJSON("EXCEL.json?ver=" + Math.random(), function (data) {
-            EXCEL = data;
-            // console.log(data);
+
+        var conf = [];
+        var thead = $('<thead></thead>').append($('<tr></tr>'));
+        var tbody = $('<tbody></tbody>').append($('<tr></tr>'));
+        $.getJSON("DATA.json?ver=" + Math.random(), function (data) {
+            conf = data;
+
+            // console.log(conf);
+            $.each(data, function (key, val) {
+                if ($(`[name=${key}]`).is("[type=number]")) {
+                    $(`[name='${key}'][type=number]`).val(val);
+                } else if ($(`[data-name=${key}]`).is("[type=checkbox]")) {
+                    if (val == 1) {
+                        $(`[data-name='${key}'][type=checkbox]`).prop("checked", true).change();
+
+                        if (key == "productcode_status") {
+                            $(thead).find("tr").append(`<th>${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}</th>`);
+                            $(tbody).find("tr").append(`<td class="productcode_status p-0"><input type="text" data-barcode="${key}" class="form-control" placeholder="${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}" min="0" maxlength="${data[key.replace("status", "count")]}"></td>`);
+                        }
+                        if (key == "Price_status") {
+                            $(thead).find("tr").append(`<th>${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}</th>`);
+                            $(tbody).find("tr").append(`<td class="Price_status p-0"><input type="text" data-barcode="${key}" class="form-control" placeholder="${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}" min="0" maxlength="${data[key.replace("status", "count")]}"></td>`);
+                        }
+                        if (key == "Weight_status") {
+                            $(thead).find("tr").append(`<th>${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}</th>`);
+                            $(tbody).find("tr").append(`<td class="Weight_status p-0"><input type="text" data-barcode="${key}" class="form-control" placeholder="${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}" min="0" maxlength="${data[key.replace("status", "count")]}"></td>`);
+                        }
+                        if (key == "Scalecode_status") {
+                            $(thead).find("tr").append(`<th>${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}</th>`);
+                            $(tbody).find("tr").append(`<td class="Scalecode_status p-0"><input type="text" data-barcode="${key}" class="form-control" placeholder="${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}" min="0" maxlength="${data[key.replace("status", "count")]}"></td>`);
+                        }
+                        if (key == "ControlNumber_status") {
+                            $(thead).find("tr").append(`<th>${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}</th>`);
+                            $(tbody).find("tr").append(`<td class="ControlNumber_status p-0"><input type="text" data-barcode="${key}" class="form-control" placeholder="${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}" min="0" maxlength="${data[key.replace("status", "count")]}"></td>`);
+                        }
+
+                    } else {
+                        $(`[data-name='${key}'][type=checkbox]`).prop("checked", false).change();
+                    }
+                }
+            });
+
+            $("#barcodeData").append(thead).append(tbody);
+        });
+
+        $(document).ready(function () {
+            var EXCEL;
+            $.getJSON("EXCEL.json?ver=" + Math.random(), function (data) {
+                EXCEL = data;
+                $.each(data, function (key, val) {
+
+                });
+                console.log(conf);
+            });
         });
 
     </script>
