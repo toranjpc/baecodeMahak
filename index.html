@@ -33,7 +33,7 @@
         </div>
 
         <div class="row">
-            <div class="col">
+            <div class="col-8">
                 <div class="card">
 
                     <div id="accordion">
@@ -63,6 +63,16 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                <tr class="p-0">
+                                                    <td>عنوان نرم افزار</td>
+                                                    <td class="p-1" colspan="2">
+                                                        <input type="text" min="0" class="form-control text-center"
+                                                            name="AppTitle">
+                                                    </td>
+                                                    <td class="text-left"></td>
+                                                    <td class=""></td>
+
+                                                </tr>
                                                 <tr class="p-0">
                                                     <td>
                                                         <label class="btn p-0 w-100 text-right">
@@ -221,20 +231,20 @@
 
                         <div class="card">
                             <div class="card-header" id="headingTwo">
-                                <h5 class="mb-0">
-                                    <button class="btn btn-link collapsed" data-toggle="collapse"
-                                        data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                        محصولات
-
-                                        <input class="upload-excel" type="file" id="fileUpload" onchange="Upload()" />
-
-                                    </button>
+                                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo"
+                                    aria-expanded="false" aria-controls="collapseTwo">
+                                    محصولات
+                                </button>
+                                <input class="upload-excel" type="file" id="fileUpload" onchange="Upload()" />
                             </div>
 
                             <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo"
                                 data-parent="#accordion">
                                 <div class="card-body">
-                                    <table class="table table-hover" id="barcodeData"></table>
+                                    <table class="table table-hover forceWidth" id="barcodeData">
+                                        <thead></thead>
+                                        <tbody></tbody>
+                                    </table>
                                 </div>
                             </div>
 
@@ -244,31 +254,15 @@
 
                 </div>
             </div>
-            <div class="col-12 col-sm-4">
+
+            <div class="col-4 col-sm-4">
                 <div class="card bg-light mb-3">
                     <div class="card-header bg-success text-white text-uppercase"><i class="fa fa-barcode"></i> بارکد
                     </div>
                     <div class="card-body p-2">
 
-                        <table class="table" dir="ltr">
-                            <thead>
-                                <tr>
-                                    <th width="50%" class="text-center">ITHEM NO :</th>
-                                    <th width="50%" class="text-center">عنوان</th>
-                                </tr>
-                                <tr>
-                                    <th width="50%" class="text-center">COL NO :</th>
-                                    <th width="50%" class="text-center">عنوان</th>
-                                </tr>
-                                <tr>
-                                    <th width="50%" class="text-center">METRS :</th>
-                                    <th width="50%" class="text-center">عنوان</th>
-                                </tr>
-                                <tr>
-                                    <th width="50%" class="text-center">YDS :</th>
-                                    <th width="50%" class="text-center">عنوان</th>
-                                </tr>
-                            </thead>
+                        <table class="table" id="lablePrint">
+                            <thead></thead>
 
                             <tfoot>
                                 <tr>
@@ -294,12 +288,14 @@
     <script src="js/barcode/JsBarcode.all.js"></script>
     <script type="text/javascript" src="js/xlsx.full.min.js"></script>
 
+    <link href="js/DataTables/datatables.min.css" rel="stylesheet">
+    <script src="js/DataTables/datatables.min.js"></script>
 
     <script>
-
         var conf = [];
-        var thead = $('<thead></thead>').append($('<tr></tr>'));
-        var tbody = $('<tbody></tbody>').append($('<tr></tr>'));
+        var thead = $('<tr></tr>');
+        var tbody = $('<tr></tr>');
+        var lablePrintHtml = '';
         $.getJSON("DATA.json?ver=" + Math.random(), function (data) {
             conf = data;
 
@@ -307,33 +303,54 @@
             $.each(data, function (key, val) {
                 if ($(`[name=${key}]`).is("[type=number]")) {
                     $(`[name='${key}'][type=number]`).val(val);
+                } else if ($(`[name=${key}]`).is("[type=text]")) {
+                    $(`[name='${key}'][type=text]`).val(val);
                 } else if ($(`[data-name=${key}]`).is("[type=checkbox]")) {
                     if (val == 1) {
                         $(`[data-name='${key}'][type=checkbox]`).prop("checked", true).change();
 
                         if (key == "productcode_status") {
-                            $(thead).find("tr").append(`<th><input class="w-100" placeholder="${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}" /></th>`);
-                            $(tbody).find("tr").append(`<td class="productcode_status text-center p-0"><input type="hidden" data-barcode="${key}" class="w-100 text-center" value="1" min="0" maxlength="${data[key.replace("status", "count")]}"></td>`);
+                            $(thead).append(`<th class="p-0 filterboxrow productcodeBase">${tit = $(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}</th>`);
+                            $(tbody).append(`<td class="productcode_status text-center p-0"><input type="hidden" data-barcode="${key}" class="w-100 text-center" value="1" min="0" maxlength="${data[key.replace("status", "count")]}"></td>`);
 
-                            $(thead).find("tr").append(`<th class="p-0" width="50%"><input class="w-100" placeholder="عنوان کالا" /></th>`);
-                            $(tbody).find("tr").append(`<td class="productcode_title px-1 py-0">عنوان کالا</td>`);
+                            $(thead).append(`<th class="p-0 filterboxrow" width="50%">عنوان کالا</th>`);
+                            $(tbody).append(`<td class="productcode_title px-1 py-0">عنوان کالا</td>`);
+
+                            lablePrintHtml += `<tr>
+                                <th width="50%" class="text-center productCode">-----</th>
+                                <th width="50%" class="text-center"> : ITEM NO</th>
+                                </tr>`;
+                            lablePrintHtml += `<tr>
+                                <th width="50%" class="text-center productTitle">-----</th>
+                                <th width="50%" class="text-center"> : TITLE</th>
+                                </tr>`;
                         }
                         if (key == "Price_status") {
-                            $(thead).find("tr").append(`<th>${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}</th>`);
-                            $(tbody).find("tr").append(`<td class="Price_status p-0"><input type="text" data-barcode="${key}" class="w-100 text-center" value="1" min="0" maxlength="${data[key.replace("status", "count")]}"></td>`);
+                            $(thead).append(`<th>${tit = $(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}</th>`);
+                            $(tbody).append(`<td class="Price_status p-0"><input type="text" data-barcode="${key}" class="w-100 text-center" value="1" min="0" maxlength="${data[key.replace("status", "count")]}"></td>`);
+
+                            lablePrintHtml += `<tr>
+                                <th width="50%" class="text-center productPrice">-----</th>
+                                <th width="50%" class="text-center"> : PRICE</th>
+                                </tr>`;
                         }
                         if (key == "Weight_status") {
-                            $(thead).find("tr").append(`<th>${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}</th>`);
-                            $(tbody).find("tr").append(`<td class="Weight_status p-0"><input type="text" data-barcode="${key}" class="w-100 text-center" value="1" min="0" Realmaxlength="${data[key.replace("status", "count")]}" maxlength="${data[key.replace("status", "count")] - (String(data.Weight_ToGram).length - 1)}"></td>`);
+                            $(thead).append(`<th>${tit = $(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}</th>`);
+                            $(tbody).append(`<td class="Weight_status p-0"><input type="text" data-barcode="${key}" class="w-100 text-center" value="1" min="0" Realmaxlength="${data[key.replace("status", "count")]}" maxlength="${data[key.replace("status", "count")] - (String(data.Weight_ToGram).length - 1)}"></td>`);
+
+                            lablePrintHtml += `<tr>
+                                <th width="50%" class="text-center productWeight">-----</th>
+                                <th width="50%" class="text-center"> : MTRS</th>
+                                </tr>`;
                         }
-                        if (key == "Scalecode_status") {
-                            $(thead).find("tr").append(`<th>${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}</th>`);
-                            $(tbody).find("tr").append(`<td class="Scalecode_status p-0"><input type="text" data-barcode="${key}" class="w-100 text-center" value="${data.Scalecode_value}" min="0" maxlength="${data[key.replace("status", "count")]}"></td>`);
-                        }
-                        if (key == "ControlNumber_status") {
-                            $(thead).find("tr").append(`<th>${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}</th>`);
-                            $(tbody).find("tr").append(`<td class="ControlNumber_status p-0"><input type="text" data-barcode="${key}" class="w-100 text-center" value="1" min="0" maxlength="${data[key.replace("status", "count")]}"></td>`);
-                        }
+                        // if (key == "Scalecode_status") {
+                        //     $(thead).append(`<th>${tit = $(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}</th>`);
+                        //     $(tbody).append(`<td class="Scalecode_status p-0"><input type="text" data-barcode="${key}" class="w-100 text-center" value="${data.Scalecode_value}" min="0" maxlength="${data[key.replace("status", "count")]}"></td>`);
+                        // }
+                        // if (key == "ControlNumber_status") {
+                        //     $(thead).append(`<th>${tit = $(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}</th>`);
+                        //     $(tbody).append(`<td class="ControlNumber_status p-0"><input type="text" data-barcode="${key}" class="w-100 text-center" value="1" min="0" maxlength="${data[key.replace("status", "count")]}"></td>`);
+                        // }
 
                     } else {
                         $(`[data-name='${key}'][type=checkbox]`).prop("checked", false).change();
@@ -341,13 +358,14 @@
                 }
             });
 
-            $(thead).find("tr").append(`<th width="1%"></th>`);
-            $(tbody).find("tr").append(`<td class="text-center"><button class="btn btn-sm btn-success btn-sm printThis" type="button"><i class="fa fa-print"></i></button></td>`);
+            $(thead).append(`<th width="1%"></th>`);
+            $(tbody).append(`<td class="text-center"><button class="btn btn-sm btn-success btn-sm printThis" type="button"><i class="fa fa-print"></i></button></td>`);
 
-            $("#barcodeData").append(thead);
+            $("#barcodeData thead").append(thead);
+            $("#lablePrint thead").append(`<tr><th colspan="2" class="text-center"><h1>${data.AppTitle}</h1></th></tr>`).append(lablePrintHtml);
         });
 
-        $(document).on("click", "#barcodeData tr", function (e) {
+        $(document).on("click", "#barcodeData tbody tr", function (e) {
             $(this).find("td").each(function () {
                 if ($(this).find("input[type=text]").length) {
                     $(this).find("input[type=text]").select().focus();
@@ -362,7 +380,9 @@
                 fontSize: 20
             });
         };
-        $(document).on("keyup , focus", "#barcodeData input", function (e) {
+        $(document).on("keyup , focus", "#barcodeData tbody input", function (e) {
+            var id = $(this).closest("tr").attr("id");
+            // console.log(e.keyCode);
             if (e.keyCode == 13) {
                 $(this).closest("td").next("td").find("[data-barcode]").select().focus();
                 if ($(this).closest("td").next("td").find(".printThis").length) {
@@ -371,10 +391,14 @@
                 else if (!$(this).closest("td").next("td").find("[data-barcode]").length) {
                     $(this).closest("td").next("td").next("td").find("[data-barcode]").select().focus();
                 }
+            } else if (e.keyCode == 38) {
+                $(this).closest("tr").prev("tr").find("td").find("[data-barcode]:first-child").select().focus();
+            } else if (e.keyCode == 40) {
+                $(this).closest("tr").next("tr").find("td").find("[data-barcode]:first-child").select().focus();
             }
 
             var val = conf.staticCode_value;
-            $(this).closest("tbody").find("[data-barcode]").each(function () {
+            $(this).closest("tr").find("[data-barcode]").each(function () {
                 var max = $(this).attr("realmaxlength") || $(this).attr("maxlength");
                 var v = $(this).val().replace(/ /g, '+').trim() || "0".repeat(max);
                 if ($(this).attr("data-barcode") == "Weight_status") {
@@ -386,6 +410,12 @@
                 }
                 val += v;
             });
+            val += conf.Scalecode_value;
+            $("#lablePrint thead .productCode").text(EXCEL[id]['شناسه']);
+            $("#lablePrint thead .productTitle").text(EXCEL[id]['عنوان']);
+            $("#lablePrint thead .productPrice").text($(this).closest("tr").find("[data-barcode='Price_status']").val());
+            $("#lablePrint thead .productWeight").text($(this).closest("tr").find("[data-barcode='Weight_status']").val());
+
             repeat5(val);
             // if ($(this).attr("maxlength") == $(this).val().length) {
             //     $(this).closest("td").next("td").find("[data-barcode]").val("").focus();
@@ -476,22 +506,54 @@
         }
 
 
+        var EXCEL;
         $(document).ready(function () {
-            var EXCEL;
             $.getJSON("EXCEL.json?ver=" + Math.random(), function (data) {
                 EXCEL = data;
                 $.each(data, function (key, val) {
                     var clon = $(tbody).clone(true);
 
+                    clon.prop("id", val['شناسه']);
                     clon.find("td.productcode_status").append(val['شناسه']).find("[data-barcode='productcode_status']").val(val['شناسه']);
                     clon.find("td.productcode_title").text(val['عنوان']);
 
-
-                    $("#barcodeData").append(clon);
+                    $("#barcodeData tbody").append(clon);
                 });
-                console.log(EXCEL);
+
+                table = new DataTable('#barcodeData', {
+                    language: {
+                        url: 'js/DataTables/fa.json'
+                    },
+                    autoWidth: false,
+                    ordering: false,
+                    // dom: 'rtip',
+                    // searching: true,
+
+                    info: false,
+                    paging: false,
+                    scrollCollapse: true,
+                    scrollY: '400px',
+
+                });
+                // new $.fn.dataTable.FixedHeader(table);
+
+                $('#barcodeData thead tr th.filterboxrow').each(function () {
+
+                    var title = $(this).eq($(this).index()).text();
+
+                    $(this).append('<input id="input' + $(this).index() + '" type="text" class="form-control text-center" placeholder="' + title + '" />').css('padding-left', '4px');
+
+                    $(this).on('keyup change', function () {
+                        table.column($(this).index()).search($('#input' + $(this).index()).val()).draw();
+                    });
+                });
+
+
             });
+
         });
+        let table;
+
 
     </script>
 
