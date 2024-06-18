@@ -68,7 +68,7 @@
                                                         <label class="btn p-0 w-100 text-right">
                                                             <span class="btn btn-sm"
                                                                 style="height: 20px;width: 20px; background-color: red;"></span>
-                                                            <input type="checkbox" contoroler
+                                                            <input type="checkbox" contorole hidden
                                                                 data-name="staticCode_status" checked>
                                                             کد ثابت بارکد
                                                         </label>
@@ -158,7 +158,7 @@
                                                         ضرب در
                                                     </td>
                                                     <td class="">
-                                                        <input type="number" data-name="Weight_ToGram"
+                                                        <input type="number" name="Weight_ToGram"
                                                             class="form-control text-center" />
                                                     </td>
                                                 </tr>
@@ -169,7 +169,7 @@
                                                                 style="height: 20px;width: 20px; background-color: pink;"></span>
                                                             <input type="checkbox" contoroler checked
                                                                 data-name="Scalecode_status">
-                                                            شماره ترازو
+                                                            ترازو/ انبار
                                                         </label>
                                                     </td>
                                                     <td class="p-1">
@@ -181,11 +181,11 @@
                                                             value="1" name="Scalecode_count">
                                                     </td>
                                                     <td class="text-left">
-                                                        ترازو به عنوان انبار
+                                                        مقدار پیشفرض
                                                     </td>
                                                     <td class="">
-                                                        <input type="checkbox" data-name="Scalecode_AsWarehouse"
-                                                            class="mx-2" />
+                                                        <input type="number" name="Scalecode_value"
+                                                            class="form-control text-center" />
                                                     </td>
                                                 </tr>
                                                 <tr class="p-0">
@@ -234,28 +234,7 @@
                             <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo"
                                 data-parent="#accordion">
                                 <div class="card-body">
-
-                                    <form action="" id="barcodeDataTitle">
-                                        <table>
-                                            <thead></thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <input type="hidden0" name="id" value="">
-                                                        شناسه
-                                                    </td>
-                                                    <td>عنوان</td>
-                                                    <td>
-                                                        <input type="number" name="number">
-                                                    </td>
-
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </form>
-
-
-                                    <table class="table" id="barcodeData"></table>
+                                    <table class="table table-hover" id="barcodeData"></table>
                                 </div>
                             </div>
 
@@ -313,46 +292,104 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/scripts.js"></script>
     <script src="js/barcode/JsBarcode.all.js"></script>
+    <script type="text/javascript" src="js/xlsx.full.min.js"></script>
+
+
     <script>
+
+        var conf = [];
+        var thead = $('<thead></thead>').append($('<tr></tr>'));
+        var tbody = $('<tbody></tbody>').append($('<tr></tr>'));
+        $.getJSON("DATA.json?ver=" + Math.random(), function (data) {
+            conf = data;
+
+            // console.log(conf);
+            $.each(data, function (key, val) {
+                if ($(`[name=${key}]`).is("[type=number]")) {
+                    $(`[name='${key}'][type=number]`).val(val);
+                } else if ($(`[data-name=${key}]`).is("[type=checkbox]")) {
+                    if (val == 1) {
+                        $(`[data-name='${key}'][type=checkbox]`).prop("checked", true).change();
+
+                        if (key == "productcode_status") {
+                            $(thead).find("tr").append(`<th><input class="w-100" placeholder="${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}" /></th>`);
+                            $(tbody).find("tr").append(`<td class="productcode_status text-center p-0"><input type="hidden" data-barcode="${key}" class="w-100 text-center" value="1" min="0" maxlength="${data[key.replace("status", "count")]}"></td>`);
+
+                            $(thead).find("tr").append(`<th class="p-0" width="50%"><input class="w-100" placeholder="عنوان کالا" /></th>`);
+                            $(tbody).find("tr").append(`<td class="productcode_title px-1 py-0">عنوان کالا</td>`);
+                        }
+                        if (key == "Price_status") {
+                            $(thead).find("tr").append(`<th>${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}</th>`);
+                            $(tbody).find("tr").append(`<td class="Price_status p-0"><input type="text" data-barcode="${key}" class="w-100 text-center" value="1" min="0" maxlength="${data[key.replace("status", "count")]}"></td>`);
+                        }
+                        if (key == "Weight_status") {
+                            $(thead).find("tr").append(`<th>${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}</th>`);
+                            $(tbody).find("tr").append(`<td class="Weight_status p-0"><input type="text" data-barcode="${key}" class="w-100 text-center" value="1" min="0" Realmaxlength="${data[key.replace("status", "count")]}" maxlength="${data[key.replace("status", "count")] - (String(data.Weight_ToGram).length - 1)}"></td>`);
+                        }
+                        if (key == "Scalecode_status") {
+                            $(thead).find("tr").append(`<th>${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}</th>`);
+                            $(tbody).find("tr").append(`<td class="Scalecode_status p-0"><input type="text" data-barcode="${key}" class="w-100 text-center" value="${data.Scalecode_value}" min="0" maxlength="${data[key.replace("status", "count")]}"></td>`);
+                        }
+                        if (key == "ControlNumber_status") {
+                            $(thead).find("tr").append(`<th>${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}</th>`);
+                            $(tbody).find("tr").append(`<td class="ControlNumber_status p-0"><input type="text" data-barcode="${key}" class="w-100 text-center" value="1" min="0" maxlength="${data[key.replace("status", "count")]}"></td>`);
+                        }
+
+                    } else {
+                        $(`[data-name='${key}'][type=checkbox]`).prop("checked", false).change();
+                    }
+                }
+            });
+
+            $(thead).find("tr").append(`<th width="1%"></th>`);
+            $(tbody).find("tr").append(`<td class="text-center"><button class="btn btn-sm btn-success btn-sm printThis" type="button"><i class="fa fa-print"></i></button></td>`);
+
+            $("#barcodeData").append(thead);
+        });
+
+        $(document).on("click", "#barcodeData tr", function (e) {
+            $(this).find("td").each(function () {
+                if ($(this).find("input[type=text]").length) {
+                    $(this).find("input[type=text]").select().focus();
+                    return false;
+                }
+            });
+        });
+
         var repeat5 = function (text) {
             JsBarcode("#barcode5", text, {
                 displayValue: true,
                 fontSize: 20
             });
         };
-        $(document).on("keyup", "#barcodeDataTitle input", function (e) {
+        $(document).on("keyup , focus", "#barcodeData input", function (e) {
             if (e.keyCode == 13) {
-                $(this).closest("td").next("td").find("[data-barcode]").val("").focus();
+                $(this).closest("td").next("td").find("[data-barcode]").select().focus();
+                if ($(this).closest("td").next("td").find(".printThis").length) {
+                    alert();
+                }
+                else if (!$(this).closest("td").next("td").find("[data-barcode]").length) {
+                    $(this).closest("td").next("td").next("td").find("[data-barcode]").select().focus();
+                }
             }
 
-            var val = '';
+            var val = conf.staticCode_value;
             $(this).closest("tbody").find("[data-barcode]").each(function () {
-                var max = $(this).attr("maxlength");
+                var max = $(this).attr("realmaxlength") || $(this).attr("maxlength");
                 var v = $(this).val().replace(/ /g, '+').trim() || "0".repeat(max);
+                if ($(this).attr("data-barcode") == "Weight_status") {
+                    v = v * conf.Weight_ToGram;
+                }
+                v = String(v);
                 if (max > v.length) {
                     v = "0".repeat(max - v.length) + v;
                 }
                 val += v;
             });
             repeat5(val);
-            if ($(this).attr("maxlength") == $(this).val().length) {
-                $(this).closest("td").next("td").find("[data-barcode]").val("").focus();
-            }
-        });
-        $(document).on("keyup", "[data-barcode]", function () {
-            var val = '';
-            $(this).closest("tbody").find("[data-barcode]").each(function () {
-                var max = $(this).attr("maxlength");
-                var v = $(this).val().replace(/ /g, '+').trim() || "0".repeat(max);
-                if (max > v.length) {
-                    v = "0".repeat(max - v.length) + v;
-                }
-                val += v;
-            });
-            repeat5(val);
-            if ($(this).attr("maxlength") == $(this).val().length) {
-                $(this).closest("td").next("td").find("[data-barcode]").val("").focus();
-            }
+            // if ($(this).attr("maxlength") == $(this).val().length) {
+            //     $(this).closest("td").next("td").find("[data-barcode]").val("").focus();
+            // }
         });
 
 
@@ -380,10 +417,7 @@
             change($(this));
         });
 
-    </script>
 
-    <script type="text/javascript" src="js/xlsx.full.min.js"></script>
-    <script>
         function Upload() {
             const fileUpload = (document.getElementById('fileUpload'));
             const regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xls|.xlsx)$/;
@@ -430,69 +464,32 @@
                 // timeout: 60000,
                 success: function (data) {
                     $("#loading").addClass('d-none');
-                    console.log(data);
+                    // console.log(data);
                     location.reload();
                 },
                 error: function (data) {
                     $("#loading").addClass('d-none');
-                    console.log(data);
+                    // console.log(data);
+                    location.reload();
                 },
             });
         }
 
-
-        var conf = [];
-        var thead = $('<thead></thead>').append($('<tr></tr>'));
-        var tbody = $('<tbody></tbody>').append($('<tr></tr>'));
-        $.getJSON("DATA.json?ver=" + Math.random(), function (data) {
-            conf = data;
-
-            // console.log(conf);
-            $.each(data, function (key, val) {
-                if ($(`[name=${key}]`).is("[type=number]")) {
-                    $(`[name='${key}'][type=number]`).val(val);
-                } else if ($(`[data-name=${key}]`).is("[type=checkbox]")) {
-                    if (val == 1) {
-                        $(`[data-name='${key}'][type=checkbox]`).prop("checked", true).change();
-
-                        if (key == "productcode_status") {
-                            $(thead).find("tr").append(`<th>${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}</th>`);
-                            $(tbody).find("tr").append(`<td class="productcode_status p-0"><input type="text" data-barcode="${key}" class="form-control" placeholder="${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}" min="0" maxlength="${data[key.replace("status", "count")]}"></td>`);
-                        }
-                        if (key == "Price_status") {
-                            $(thead).find("tr").append(`<th>${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}</th>`);
-                            $(tbody).find("tr").append(`<td class="Price_status p-0"><input type="text" data-barcode="${key}" class="form-control" placeholder="${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}" min="0" maxlength="${data[key.replace("status", "count")]}"></td>`);
-                        }
-                        if (key == "Weight_status") {
-                            $(thead).find("tr").append(`<th>${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}</th>`);
-                            $(tbody).find("tr").append(`<td class="Weight_status p-0"><input type="text" data-barcode="${key}" class="form-control" placeholder="${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}" min="0" maxlength="${data[key.replace("status", "count")]}"></td>`);
-                        }
-                        if (key == "Scalecode_status") {
-                            $(thead).find("tr").append(`<th>${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}</th>`);
-                            $(tbody).find("tr").append(`<td class="Scalecode_status p-0"><input type="text" data-barcode="${key}" class="form-control" placeholder="${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}" min="0" maxlength="${data[key.replace("status", "count")]}"></td>`);
-                        }
-                        if (key == "ControlNumber_status") {
-                            $(thead).find("tr").append(`<th>${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}</th>`);
-                            $(tbody).find("tr").append(`<td class="ControlNumber_status p-0"><input type="text" data-barcode="${key}" class="form-control" placeholder="${$(`[data-name='${key}'][type=checkbox]`).closest("label").text().trim()}" min="0" maxlength="${data[key.replace("status", "count")]}"></td>`);
-                        }
-
-                    } else {
-                        $(`[data-name='${key}'][type=checkbox]`).prop("checked", false).change();
-                    }
-                }
-            });
-
-            $("#barcodeData").append(thead).append(tbody);
-        });
 
         $(document).ready(function () {
             var EXCEL;
             $.getJSON("EXCEL.json?ver=" + Math.random(), function (data) {
                 EXCEL = data;
                 $.each(data, function (key, val) {
+                    var clon = $(tbody).clone(true);
 
+                    clon.find("td.productcode_status").append(val['شناسه']).find("[data-barcode='productcode_status']").val(val['شناسه']);
+                    clon.find("td.productcode_title").text(val['عنوان']);
+
+
+                    $("#barcodeData").append(clon);
                 });
-                console.log(conf);
+                console.log(EXCEL);
             });
         });
 
