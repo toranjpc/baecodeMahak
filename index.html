@@ -424,8 +424,8 @@
                 val += v;
             });
             val += conf.Scalecode_value;
-            $("#lablePrint thead .productCode").text(EXCEL[id]['شناسه'] || '------');
-            $("#lablePrint thead .productTitle").text(EXCEL[id]['عنوان'] || '------');
+            $("#lablePrint thead .productCode").text(EXCEL[id][firstKey] || '------');
+            $("#lablePrint thead .productTitle").text(EXCEL[id][secondKey] || '------');
             $("#lablePrint thead .productPrice").text($(this).closest("tr").find("[data-barcode='Price_status']").val());
             $("#lablePrint thead .productWeight").text($(this).closest("tr").find("[data-barcode='Weight_status']").val());
 
@@ -520,15 +520,22 @@
 
 
         var EXCEL;
+        var firstKey = '';
+        var secondKey = '';
         $(document).ready(function () {
             $.getJSON("EXCEL.json?ver=" + Math.random(), function (data) {
                 EXCEL = data;
+                var object = Object.keys(data[0]);
+                firstKey = object[1];
+                secondKey = object[2];
+                console.log(firstKey, secondKey);
+
                 $.each(data, function (key, val) {
                     var clon = $(tbody).clone(true);
 
                     clon.prop("id", key);
-                    clon.find("td.productcode_status").append(val['شناسه']).find("[data-barcode='productcode_status']").val(val['شناسه']);
-                    clon.find("td.productcode_title").text(val['عنوان']);
+                    clon.find("td.productcode_status").append(val[firstKey]).find("[data-barcode='productcode_status']").val(val[firstKey]);
+                    clon.find("td.productcode_title").text(val[secondKey]);
 
                     $("#barcodeData tbody").append(clon);
                 });
