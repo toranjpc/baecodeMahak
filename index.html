@@ -394,24 +394,27 @@
             printBarcode($(this));
         });
         $(document).on("keyup , focus", "#barcodeData tbody input", function (e) {
-            var id = $(this).closest("tr").attr("id");
+            var dis = $(this).closest("tr");
             // console.log(e.keyCode);
             if (e.keyCode == 13) {
-                $(this).closest("td").next("td").find("[data-barcode]").select().focus();
-                if ($(this).closest("td").next("td").find(".printThis").length) {
-                    printBarcode($(this));
+                $(dis).closest("td").next("td").find("[data-barcode]").select().focus();
+                if ($(dis).closest("td").next("td").find(".printdis").length) {
+                    printBarcode($(dis));
                 }
-                else if (!$(this).closest("td").next("td").find("[data-barcode]").length) {
-                    $(this).closest("td").next("td").next("td").find("[data-barcode]").select().focus();
+                else if (!$(dis).closest("td").next("td").find("[data-barcode]").length) {
+                    $(dis).closest("td").next("td").next("td").find("[data-barcode]").select().focus();
                 }
             } else if (e.keyCode == 38) {
-                $(this).closest("tr").prev("tr").find("td").find("[data-barcode]:first-child").select().focus();
+                dis = $(dis).prev("tr");
+                $(dis).find("td").find("[data-barcode]:first-child").select().focus();
             } else if (e.keyCode == 40) {
-                $(this).closest("tr").next("tr").find("td").find("[data-barcode]:first-child").select().focus();
+                dis = $(dis).next("tr");
+                $(dis).find("td").find("[data-barcode]:first-child").select().focus();
             }
+            var id = $(dis).attr("id");
 
             var val = conf.staticCode_value;
-            $(this).closest("tr").find("[data-barcode]").each(function () {
+            $(dis).find("[data-barcode]").each(function () {
                 var max = $(this).attr("realmaxlength") || $(this).attr("maxlength");
                 var v = $(this).val().replace(/ /g, '+').trim() || "0".repeat(max);
                 if ($(this).attr("data-barcode") == "Weight_status") {
@@ -426,13 +429,10 @@
             val += conf.Scalecode_value;
             $("#lablePrint thead .productCode").text(EXCEL[id][firstKey] || '------');
             $("#lablePrint thead .productTitle").text(EXCEL[id][secondKey] || '------');
-            $("#lablePrint thead .productPrice").text($(this).closest("tr").find("[data-barcode='Price_status']").val());
-            $("#lablePrint thead .productWeight").text($(this).closest("tr").find("[data-barcode='Weight_status']").val());
+            $("#lablePrint thead .productPrice").text($(dis).find("[data-barcode='Price_status']").val());
+            $("#lablePrint thead .productWeight").text($(dis).find("[data-barcode='Weight_status']").val());
 
             repeat5(val);
-            // if ($(this).attr("maxlength") == $(this).val().length) {
-            //     $(this).closest("td").next("td").find("[data-barcode]").val("").focus();
-            // }
         });
 
 
