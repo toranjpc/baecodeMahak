@@ -21,7 +21,7 @@
 
     <div class="container-fluid">
 
-        <div class="row">
+        <div class="row d-none">
             <div class="col">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
@@ -305,7 +305,6 @@
         $.getJSON("DATA.json?ver=" + Math.random(), function (data) {
             conf = data;
 
-            // console.log(conf);
             $.each(data, function (key, val) {
                 if ($(`[name=${key}]`).is("[type=number]")) {
                     $(`[name='${key}'][type=number]`).val(val);
@@ -394,27 +393,29 @@
             printBarcode($(this));
         });
         $(document).on("keyup , focus", "#barcodeData tbody input", function (e) {
-            var dis = $(this).closest("tr");
-            // console.log(e.keyCode);
+            var dis = $(this)//.closest("tr");
             if (e.keyCode == 13) {
-                $(dis).closest("td").next("td").find("[data-barcode]").select().focus();
-                if ($(dis).closest("td").next("td").find(".printdis").length) {
-                    printBarcode($(dis));
-                }
-                else if (!$(dis).closest("td").next("td").find("[data-barcode]").length) {
-                    $(dis).closest("td").next("td").next("td").find("[data-barcode]").select().focus();
-                }
+                printBarcode($(dis).closest("tr"));
+                // $(dis).closest("td").next("td").find("[data-barcode]").select().focus();
+                // if ($(dis).closest("td").next("td").find(".printdis").length) {
+                //     alert()
+                //     return
+                //     printBarcode($(dis).closest("tr"));
+                // }
+                // else if (!$(dis).closest("td").next("td").find("[data-barcode]").length) {
+                //     $(dis).closest("td").next("td").next("td").find("[data-barcode]").select().focus();
+                // }
             } else if (e.keyCode == 38) {
-                dis = $(dis).prev("tr");
-                $(dis).find("td").find("[data-barcode]:first-child").select().focus();
+                dis = $(dis).closest("tr").prev("tr");
+                $(dis).closest("tr").find("td").find("[data-barcode]:first-child").select().focus();
             } else if (e.keyCode == 40) {
-                dis = $(dis).next("tr");
-                $(dis).find("td").find("[data-barcode]:first-child").select().focus();
+                dis = $(dis).closest("tr").next("tr");
+                $(dis).closest("tr").find("td").find("[data-barcode]:first-child").select().focus();
             }
-            var id = $(dis).attr("id");
+            var id = $(dis).closest("tr").attr("id");
 
             var val = conf.staticCode_value;
-            $(dis).find("[data-barcode]").each(function () {
+            $(dis).closest("tr").find("[data-barcode]").each(function () {
                 var max = $(this).attr("realmaxlength") || $(this).attr("maxlength");
                 var v = $(this).val().replace(/ /g, '+').trim() || "0".repeat(max);
                 if ($(this).attr("data-barcode") == "Weight_status") {
@@ -429,12 +430,11 @@
             val += conf.Scalecode_value;
             $("#lablePrint thead .productCode").text(EXCEL[id][firstKey] || '------');
             $("#lablePrint thead .productTitle").text(EXCEL[id][secondKey] || '------');
-            $("#lablePrint thead .productPrice").text($(dis).find("[data-barcode='Price_status']").val());
-            $("#lablePrint thead .productWeight").text($(dis).find("[data-barcode='Weight_status']").val());
+            $("#lablePrint thead .productPrice").text($(dis).closest("tr").find("[data-barcode='Price_status']").val());
+            $("#lablePrint thead .productWeight").text($(dis).closest("tr").find("[data-barcode='Weight_status']").val());
 
             repeat5(val);
         });
-
 
         var change = (X) => {
             if ($(X).is(":checked")) {
@@ -460,7 +460,6 @@
             change($(this));
         });
 
-
         function Upload() {
             const fileUpload = (document.getElementById('fileUpload'));
             const regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xls|.xlsx)$/;
@@ -475,10 +474,10 @@
                         reader.readAsBinaryString(fileUpload.files[0]);
                     }
                 } else {
-                    console.log("This browser does not support HTML5.");
+                    // console.log("This browser does not support HTML5.");
                 }
             } else {
-                console.log("Please upload a valid Excel file.");
+                // console.log("Please upload a valid Excel file.");
             }
         }
 
@@ -486,8 +485,6 @@
             const workbook = XLSX.read(data, { type: 'binary' });
             const firstSheet = workbook.SheetNames[0];
             const excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheet]);
-
-            // console.log(excelRows);
             senddat(excelRows);
         }
 
@@ -507,35 +504,30 @@
                 // timeout: 60000,
                 success: function (data) {
                     $("#loading").addClass('d-none');
-                    // console.log(data);
                     location.reload();
                 },
                 error: function (data) {
                     $("#loading").addClass('d-none');
-                    // console.log(data);
                     location.reload();
                 },
             });
         }
 
-
         var EXCEL;
-        var firstKey = '';
-        var secondKey = '';
+        var firstKey = 'کد';
+        var secondKey = 'نام کامل کالا';
         $(document).ready(function () {
             $.getJSON("EXCEL.json?ver=" + Math.random(), function (data) {
                 EXCEL = data;
                 var object = Object.keys(data[0]);
-                firstKey = object[1];
-                secondKey = object[2];
-                console.log(firstKey, secondKey);
-
+                // firstKey = object[1];
+                // secondKey = object[2];
                 $.each(data, function (key, val) {
                     var clon = $(tbody).clone(true);
 
                     clon.prop("id", key);
-                    clon.find("td.productcode_status").append(val[firstKey]).find("[data-barcode='productcode_status']").val(val[firstKey]);
-                    clon.find("td.productcode_title").text(val[secondKey]);
+                    clon.find("td.productcode_status").append(val[firstKey] || '------').find("[data-barcode='productcode_status']").val(val[firstKey] || '------');
+                    clon.find("td.productcode_title").text(val[secondKey] || '------');
 
                     $("#barcodeData tbody").append(clon);
                 });
@@ -563,7 +555,11 @@
 
                     $(this).append('<input id="input' + $(this).index() + '" type="text" class="form-control text-center" placeholder="' + title + '" />').css('padding-left', '4px');
 
-                    $(this).on('keyup change', function () {
+                    $(this).on('keyup change', function (e) {
+                        if (e.keyCode == 13) {
+                            $("#barcodeData tbody tr:first-child input[data-barcode='Weight_status']").focus();
+                            return
+                        }
                         table.column($(this).index()).search($('#input' + $(this).index()).val()).draw();
                     });
                 });
