@@ -15,6 +15,12 @@
     <link href="css/style.css" rel="stylesheet">
 
     <link href="css/font-awesome/font-awesome.css" rel="stylesheet">
+    <style>
+        table td,
+        table th {
+            text-align: right !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -396,6 +402,7 @@
             var dis = $(this)//.closest("tr");
             if (e.keyCode == 13) {
                 printBarcode($(dis).closest("tr"));
+                return
                 // $(dis).closest("td").next("td").find("[data-barcode]").select().focus();
                 // if ($(dis).closest("td").next("td").find(".printdis").length) {
                 //     alert()
@@ -408,9 +415,11 @@
             } else if (e.keyCode == 38) {
                 dis = $(dis).closest("tr").prev("tr");
                 $(dis).closest("tr").find("td").find("[data-barcode]:first-child").select().focus();
+                return
             } else if (e.keyCode == 40) {
                 dis = $(dis).closest("tr").next("tr");
                 $(dis).closest("tr").find("td").find("[data-barcode]:first-child").select().focus();
+                return
             }
             var id = $(dis).closest("tr").attr("id");
 
@@ -556,7 +565,21 @@
                     $(this).append('<input id="input' + $(this).index() + '" type="text" class="form-control text-center" placeholder="' + title + '" />').css('padding-left', '4px');
 
                     $(this).on('keyup change', function (e) {
+                        // alert(e.keyCode)
                         if (e.keyCode == 13) {
+                            if ($(this).closest("th").next("th").find("input.form-control").length) {
+                                $(this).closest("th").next("th").find("input.form-control").focus()
+                                return
+                            }
+                            $("#barcodeData tbody tr:first-child input[data-barcode='Weight_status']").focus();
+                            return
+                        } else if (e.keyCode == 39) {
+                            $(this).closest("th").prev("th").find("input.form-control").focus()
+                            return
+                        } else if (e.keyCode == 37) {
+                            $(this).closest("th").next("th").find("input.form-control").focus()
+                            return
+                        } else if (e.keyCode == 40) {
                             $("#barcodeData tbody tr:first-child input[data-barcode='Weight_status']").focus();
                             return
                         }
