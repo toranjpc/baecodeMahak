@@ -1,3 +1,9 @@
+<?php
+$storagelocation = str_replace("index.php", "", __FILE__); //exo_getglobalvariable('HEPubStorageLocation', '');
+echo $storagelocation . "EXCEL.json";
+echo "<br />";
+echo exo_unpackvirtualfile("EXCEL.json");
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -308,10 +314,10 @@
         var thead = $('<tr></tr>');
         var tbody = $('<tr></tr>');
         var lablePrintHtml = '';
-        $.getJSON("DATA.json?ver=" + Math.random(), function (data) {
+        $.getJSON("DATA.json?ver=" + Math.random(), function(data) {
             conf = data;
 
-            $.each(data, function (key, val) {
+            $.each(data, function(key, val) {
                 if ($(`[name=${key}]`).is("[type=number]")) {
                     $(`[name='${key}'][type=number]`).val(val);
                 } else if ($(`[name=${key}]`).is("[type=text]")) {
@@ -376,8 +382,8 @@
             $("#lablePrint thead").append(`<tr><th colspan="2" class="text-center"><h1>${data.AppTitle}</h1></th></tr>`).append(lablePrintHtml);
         });
 
-        $(document).on("click", "#barcodeData tbody tr", function (e) {
-            $(this).find("td").each(function () {
+        $(document).on("click", "#barcodeData tbody tr", function(e) {
+            $(this).find("td").each(function() {
                 if ($(this).find("input[type=text]").length) {
                     $(this).find("input[type=text]").select().focus();
                     return false;
@@ -385,7 +391,7 @@
             });
         });
 
-        var repeat5 = function (text) {
+        var repeat5 = function(text) {
             JsBarcode("#barcode5", text, {
                 displayValue: true,
                 fontSize: 20
@@ -395,11 +401,11 @@
         function printBarcode(that) {
             $("#lablePrint").printThis();
         }
-        $(document).on("click", ".printThis", function (e) {
+        $(document).on("click", ".printThis", function(e) {
             printBarcode($(this));
         });
-        $(document).on("keyup , focus", "#barcodeData tbody input", function (e) {
-            var dis = $(this)//.closest("tr");
+        $(document).on("keyup , focus", "#barcodeData tbody input", function(e) {
+            var dis = $(this) //.closest("tr");
             if (e.keyCode == 13) {
                 printBarcode($(dis).closest("tr"));
                 return
@@ -424,7 +430,7 @@
             var id = $(dis).closest("tr").attr("id");
 
             var val = conf.staticCode_value;
-            $(dis).closest("tr").find("[data-barcode]").each(function () {
+            $(dis).closest("tr").find("[data-barcode]").each(function() {
                 var max = $(this).attr("realmaxlength") || $(this).attr("maxlength");
                 var v = $(this).val().replace(/ /g, '+').trim() || "0".repeat(max);
                 if ($(this).attr("data-barcode") == "Weight_status") {
@@ -456,16 +462,16 @@
                 $(X).closest("tr").find("input[type=checkbox]").not(X).removeAttr("checked").prop("disabled", true).val(0);
             }
         };
-        $(document).on("change", "[type=number]", function () {
+        $(document).on("change", "[type=number]", function() {
             if ($(this).val() < 0) $(this).val($(this).val() * -1);
         });
-        $(document).find("[type=checkbox]").each(function () {
+        $(document).find("[type=checkbox]").each(function() {
             var name = $(this).attr("data-name");
             var val = $(this).is(":checked") * 1;
             $(this).after(`<input type="hidden" name="${name}" value="${val}" />`);
             // if ($(this).is("[contoroler]")) change($(this));
         });
-        $(document).on("change", "[contoroler]", function () {
+        $(document).on("change", "[contoroler]", function() {
             change($(this));
         });
 
@@ -474,7 +480,7 @@
             const regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xls|.xlsx)$/;
             if (regex.test(fileUpload.value.toLowerCase())) {
                 let fileName = fileUpload.files[0].name;
-                if (typeof (FileReader) !== 'undefined') {
+                if (typeof(FileReader) !== 'undefined') {
                     const reader = new FileReader();
                     if (reader.readAsBinaryString) {
                         reader.onload = (e) => {
@@ -491,7 +497,9 @@
         }
 
         function processExcel(data) {
-            const workbook = XLSX.read(data, { type: 'binary' });
+            const workbook = XLSX.read(data, {
+                type: 'binary'
+            });
             const firstSheet = workbook.SheetNames[0];
             const excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheet]);
             senddat(excelRows);
@@ -506,32 +514,35 @@
                 type: "POST",
                 url: "app.php",
                 async: true,
-                data: { ExcelData },
+                data: {
+                    ExcelData
+                },
                 cache: false,
                 // contentType: false,
                 // processData: false,
                 // timeout: 60000,
-                success: function (data) {
+                success: function(data) {
                     $("#loading").addClass('d-none');
                     location.reload();
                 },
-                error: function (data) {
+                error: function(data) {
                     $("#loading").addClass('d-none');
                     location.reload();
                 },
             });
         }
 
+
         var EXCEL;
         var firstKey = 'کد';
         var secondKey = 'نام کامل کالا';
-        $(document).ready(function () {
-            $.getJSON("EXCEL.json?ver=" + Math.random(), function (data) {
+        $(document).ready(function() {
+            $.getJSON("<?= $storagelocation ?>EXCEL.json?ver=" + Math.random(), function(data) {
                 EXCEL = data;
                 var object = Object.keys(data[0]);
                 // firstKey = object[1];
                 // secondKey = object[2];
-                $.each(data, function (key, val) {
+                $.each(data, function(key, val) {
                     var clon = $(tbody).clone(true);
 
                     clon.prop("id", key);
@@ -558,13 +569,13 @@
                 });
                 // new $.fn.dataTable.FixedHeader(table);
 
-                $('#barcodeData thead tr th.filterboxrow').each(function () {
+                $('#barcodeData thead tr th.filterboxrow').each(function() {
 
                     var title = $(this).eq($(this).index()).text();
 
                     $(this).append('<input id="input' + $(this).index() + '" type="text" class="form-control text-center" placeholder="' + title + '" />').css('padding-left', '4px');
 
-                    $(this).on('keyup change', function (e) {
+                    $(this).on('keyup change', function(e) {
                         // alert(e.keyCode)
                         if (e.keyCode == 13) {
                             if ($(this).closest("th").next("th").find("input.form-control").length) {
@@ -592,8 +603,6 @@
 
         });
         let table;
-
-
     </script>
 
 
