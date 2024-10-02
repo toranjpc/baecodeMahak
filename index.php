@@ -1,9 +1,3 @@
-<?php
-$storagelocation = str_replace("index.php", "", __FILE__); //exo_getglobalvariable('HEPubStorageLocation', '');
-echo $storagelocation . "EXCEL.json";
-echo "<br />";
-echo exo_unpackvirtualfile("EXCEL.json");
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,11 +20,35 @@ echo exo_unpackvirtualfile("EXCEL.json");
         table th {
             text-align: right !important;
         }
+
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+
+            /* From https://css.glass */
+            background: rgba(255, 255, 255, 0);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
     </style>
 </head>
 
 <body>
-
+    <div id="loading">
+        <div class="d-flex justify-content-center align-items-center">
+            <div class="text-center">
+                <img src="./loading.gif" alt="">
+                <p><b>درحال بارگزاری ....</b></p>
+            </div>
+        </div>
+    </div>
     <div class="container-fluid">
 
         <div class="row d-none">
@@ -502,6 +520,8 @@ echo exo_unpackvirtualfile("EXCEL.json");
             });
             const firstSheet = workbook.SheetNames[0];
             const excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheet]);
+            // console.log(excelRows)
+            // return false
             senddat(excelRows);
         }
 
@@ -522,12 +542,12 @@ echo exo_unpackvirtualfile("EXCEL.json");
                 // processData: false,
                 // timeout: 60000,
                 success: function(data) {
-                    $("#loading").addClass('d-none');
                     location.reload();
+                    $("#loading").addClass('d-none');
                 },
                 error: function(data) {
-                    $("#loading").addClass('d-none');
                     location.reload();
+                    $("#loading").addClass('d-none');
                 },
             });
         }
@@ -537,7 +557,8 @@ echo exo_unpackvirtualfile("EXCEL.json");
         var firstKey = 'کد';
         var secondKey = 'نام کامل کالا';
         $(document).ready(function() {
-            $.getJSON("<?= $storagelocation ?>EXCEL.json?ver=" + Math.random(), function(data) {
+            $.getJSON("EXCEL.json?ver=" + Math.random(), function(data) {
+                // $.getJSON("DATA.xlsx?ver=" + Math.random(), function(data) {
                 EXCEL = data;
                 var object = Object.keys(data[0]);
                 // firstKey = object[1];
@@ -603,6 +624,13 @@ echo exo_unpackvirtualfile("EXCEL.json");
 
         });
         let table;
+
+
+
+
+        $(document).ready(function() {
+            $("#loading").addClass("d-none")
+        });
     </script>
 
 

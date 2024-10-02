@@ -1,5 +1,5 @@
 <?php
-$path = $_SERVER['DOCUMENT_ROOT'];
+$path = '.'; // $_SERVER['DOCUMENT_ROOT'];
 
 if (isset($_POST['productcode_start'])) {
     // $path = exo_getglobalvariable('HEPubStorageLocation', '');
